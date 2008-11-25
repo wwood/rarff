@@ -1,11 +1,63 @@
 = rarff
 
-Rarff - Ruby ARFF Library
+http://adenserparlance.blogspot.com/2007/01/rarff-simple-arff-library-in-ruby.html
+
+== DESCRIPTION:
 
 Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files. ARFF files are used to specify data sets for data mining and machine learning.
 
 
-== License
+== FEATURES/PROBLEMS:
+
+=== FEATURES
+* Missing values - '?' are handled in creation of ARFF files
+
+=== PROBLEMS
+* Spaces or quotes in nominal types
+* Commas in quoted attributes or in nominal types
+* Add error checking/validation
+* Creation of sparse ARFF files
+* Dates - do some work to create, translate, and interpret date format strings.
+
+== SYNOPSIS:
+
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 NUMERIC
+@ATTRIBUTE subject STRING
+@ATTRIBUTE Attr2 NUMERIC
+@ATTRIBUTE Attr3 STRING
+@ATTRIBUTE birthday DATE "yyyy-MM-dd HH:mm:ss"
+@DATA
+1.4, 'foo bar', 5, baz, "1900-08-08 12:12:12"
+20.9, ruby, 46, rocks, "2005-10-23 12:12:12"
+0, ruby, 46, rocks, "2001-02-19 12:12:12"
+68.1, stuff, 728, 'is cool', "1974-02-10 12:12:12"
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [1.4, 'foo bar', 5, 'baz', "1900-08-08 12:12:12"],
+      [20.9, 'ruby', 46, 'rocks', "2005-10-23 12:12:12"],
+      [0, 'ruby', 46, 'rocks', "2001-02-19 12:12:12"],
+      [68.1, 'stuff', 728, 'is cool', "1974-02-10 12:12:12"]]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.attributes[1].name = 'subject'
+    rel.attributes[4].name = 'birthday'
+    rel.attributes[4].type = 'DATE "yyyy-MM-dd HH:mm:ss"'
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "Arff creation test failed.")
+
+== REQUIREMENTS:
+
+== INSTALL:
+
+* sudo gem install wwood-rarff
+
+== LICENSE:
 
 Copyright (c) 2008 Andy Payne
 All rights reserved.
@@ -33,48 +85,6 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-== Changes
-
-* Sparse ARFF files (thanks to Tom Adams)
-
-
-== Todo
-
-* Spaces or quotes in nominal types
-* Commas in quoted attributes or in nominal types
-* Add error checking/validation
-* Creation of sparse ARFF files
-* Missing values - '?'
-* Dates - do some work to create, translate, and interpret date format strings.
-
-
-== Weka
-
-Weka is "a collection of machine learning algorithms for data mining tasks."
-(http://www.cs.waikato.ac.nz/ml/weka/)  Weka accompanies the following book:
-
-Ian H. Witten and Eibe Frank (2005) "Data Mining: Practical machine learning
-tools and techniques", 2nd Edition, Morgan Kaufmann, San Francisco, 2005.
-
-
-== ARFF Information
-
-ARFF files are similar to CSV files, but are strongly-typed, have a pre-defined
-set of data types, and include a sparse representation.
-
-Links to documentation:
-
-* http://www.cs.waikato.ac.nz/~ml/weka/arff.html
-* http://weka.sourceforge.net/wekadoc/index.php/en:ARFF_%283.4.6%29
-
-== Contact Information
-
-Andy Payne
-Website:        http://andy-payne.com/
-Email:          apayne .at. gmail.com
-Twitter:        http://twitter.com/andypayne
-RARFF website:  http://rubyforge.org/projects/rarff/
 
 
 

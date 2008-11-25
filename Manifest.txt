@@ -1,0 +1,8 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+lib/rarff.rb
+test/test_arff.arff
+test/test_sparse_arff.arff 
+test/ts_rarff.rb

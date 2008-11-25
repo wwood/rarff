@@ -1,0 +1,9 @@
+== Changes
+
+=== 0.2.1 (unofficial)
+
+* Handles missing data in output, encoded internally as nil values
+
+== 0.2.0 ?
+
+* Sparse ARFF files (thanks to Tom Adams)
