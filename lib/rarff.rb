@@ -144,49 +144,66 @@ module Rarff
           # Sparse ARFF
           # TODO: Factor duplication with non-sparse data below
           @instances << expand_sparse(data.first)
-          create_attributes()
+          create_attributes(true)
         }
         next if line.my_scan(/^\s*(.*)\s*$/) { |data|
           @instances << data.first.split(/,\s*/).map { |field|
             # Remove outer single quotes on strings, if any ('foo bar' --> foo bar)
             field.gsub(/^\s*\'(.*)\'\s*$/, "\\1")
           }
-          create_attributes()
+          create_attributes(true)
         }
       }
     end
 
 
-    def instances=(instances)
+    # Assign instances to the internal array
+    # parse: choose to parse strings into numerics
+    def instances=(instances, parse=false)
       @instances = instances
-      create_attributes()
+      create_attributes(parse)
     end
 
 
-    def create_attributes
-      attr_pass = true
-
-      @instances.each_index { |i|
-        @instances[i].each_index { |j|
-          if @instances[i][j].class != String
-            if attr_pass == true
+    
+    def create_attributes(attr_parse=false)
+      raise Exception, "Not enough data to create ARFF attributes" if @instances.nil? or 
+        @instances.empty? or 
+        @instances[0].empty?
+      
+      # Keep track of whether an attribute has been defined or not.
+      # The only reason an attribute would not be defined in the first
+      # row is if it has nil's in it. The geek inside screams for a binary
+      # encoding like chmod but eh.
+      attributes_defined = {}
+      @instances.each_with_index { |row, i|
+        row.each_with_index { |col, j|
+          next if attributes_defined[j] or col.nil?
+          
+          attributes_defined[j] = true #whatever happens, we are going to define it
+          if attr_parse
+            if col =~ /^\-?\d+\.?\d*$/
               @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_NUMERIC)
             end
-          elsif @instances[i][j] =~ /^\-?\d+\.?\d*$/
-            # TODO: Should I have a separate to_i conversion, or is to_f sufficient?
-            @instances[i][j] = @instances[i][j].to_f
-            if attr_pass == true
-              @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_NUMERIC)
-            end
+            next #parse next column - this one is finished
+          end
+          
+          # No parsing - just take it how it is
+          if col.kind_of?(Numeric)
+            @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_NUMERIC)
+          elsif col.kind_of?(String)
+            @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_STRING)
           else
-            if attr_pass == true
-              @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_STRING)
-            end
+            raise Exception, "Could not parse attribute: #{col.inspect}"
           end
         }
-
-        attr_pass = false
       }
+      
+      # Make sure all attributes have a definition, because otherwise
+      # needless errors are thrown
+      @instances[0].each_index do |i|
+        @attributes[i] ||= Attribute.new("Attr#{i}", ATTRIBUTE_NUMERIC)
+      end
     end
 
 
@@ -208,7 +225,7 @@ module Rarff
         
         @instances.map { |inst|
         mapped = inst.map_with_index { |col, i|
-          # First pass - quote strings with spaces and dates
+          # First pass - quote strings with spaces, and dates
           # TODO: Doesn't handle cases in which strings already contain
           # quotes or are already quoted.
           unless col.nil?
