@@ -205,24 +205,44 @@ module Rarff
         @attributes.map{ |attr| attr.to_arff }.join("\n") +
         "\n" +
         DATA_MARKER + "\n" +
+        
         @instances.map { |inst|
-        inst.map_with_index { |col, i|
-          # Quote strings with spaces.
+        mapped = inst.map_with_index { |col, i|
+          # First pass - quote strings with spaces and dates
           # TODO: Doesn't handle cases in which strings already contain
           # quotes or are already quoted.
-          if @attributes[i].type =~ /^#{ATTRIBUTE_STRING}$/i
-            if col =~ /\s+/
-              col = "'" + col + "'"
+          unless col.nil?
+            if @attributes[i].type =~ /^#{ATTRIBUTE_STRING}$/i
+              if col =~ /\s+/
+                col = "'" + col + "'"
+              end
+            elsif @attributes[i].type =~ /^#{ATTRIBUTE_DATE}/i  ## Hack comparison. Ugh.
+              col = '"' + col + '"'
             end
-          elsif @attributes[i].type =~ /^#{ATTRIBUTE_DATE}/i  ## Hack comparison. Ugh.
-            col = '"' + col + '"'
           end
-          if @attributes[i].type =~ /^#{ATTRIBUTE_NUMERIC}$/i and col == 0
-            nil
+          
+          # Do the final output
+          if sparse
+            if col.nil? or 
+                (@attributes[i].type =~ /^#{ATTRIBUTE_NUMERIC}$/i and col == 0)
+              nil
+            else
+              "#{i} #{col}"
+            end
           else
-            sparse ? "#{i} #{col}" : col
+            if col.nil?
+              MISSING
+            else
+              col
+            end
           end
-        }.select{|c|not c.nil?}.join(', ')
+        }
+        
+        if sparse
+          mapped.reject{|col| col.nil?}.join(', ')
+        else
+          mapped.join(", ")
+        end
       }.join("\n").gsub(/^/, sparse ? '{' : '').gsub(/$/, sparse ? '}' : '')
     end
 
