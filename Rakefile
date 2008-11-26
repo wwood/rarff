@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'hoe'
-require './lib/rarff.rb'
+#require './lib/rarff.rb'
  
 gem_name = 'rarff'
 hoe = Hoe.new(gem_name,'0.2.1') do |p|
@@ -19,19 +19,6 @@ data sets for data mining and machine learning.'
     :require_paths => ['lib','test'],
     :has_rdoc => true,
     :extra_rdoc_files => ["README.txt"],
-    :rdoc_options => ["--exclude", "tests/*", "--main", "README.txt", "--inline-source"]
+    :rdoc_options => ["--exclude", "test/*", "--main", "README.txt", "--inline-source"]
   }
- 
- # task :setup_rb_package => [:clean, :package] do
- #   
- #   package_dir = "#{p.name}-#{p.version}"
- #   cp("setup.rb","pkg/#{package_dir}")
- #   #cp("manual.pdf","pkg/#{package_dir}")
- #   
- #   Dir.chdir("pkg")
- #   system("tar -czf #{p.name}-#{p.version}.tgz #{package_dir}")
- #   Dir.chdir("..")
-# 
-#  end
- 
 end

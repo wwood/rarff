@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
   s.description = %q{Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files. ARFF files are used to specify  data sets for data mining and machine learning.}
   s.email = %q{apayne .at. gmail.com, b.woodcroft@pgrad.unimelb.edu.au}
   s.extra_rdoc_files = ["README.txt"]
-  s.files = ["History.txt", "Manifest.txt", "README.txt", "Rakefile", "lib/rarff.rb", "test/test_arff.arff", "test/test_sparse_arff.arff ", "test/ts_rarff.rb", "test/test_rarff.rb"]
+  s.files = ["History.txt", "Manifest.txt", "README.txt", "Rakefile", "lib/rarff.rb", "test/test_arff.arff", "test/test_sparse_arff.arff", "test/test_rarff.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://adenserparlance.blogspot.com/2007/01/rarff-simple-arff-library-in-ruby.html}
-  s.rdoc_options = ["--exclude", "tests/*", "--main", "README.txt", "--inline-source"]
+  s.rdoc_options = ["--exclude", "test/*", "--main", "README.txt", "--inline-source"]
   s.require_paths = ["lib", "test"]
   s.rubyforge_project = %q{rarff}
   s.rubygems_version = %q{1.2.0}
