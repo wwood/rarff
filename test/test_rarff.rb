@@ -155,7 +155,48 @@ class TestArffLib < Test::Unit::TestCase
     rel.attributes[4].type = 'DATE "yyyy-MM-dd HH:mm:ss"'
 
     #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
-    assert_equal(arff_file_str, rel.to_arff, "missing data output failure")
+    assert_equal(arff_file_str, rel.to_arff, "missing data from first line output failure")
+  end
+  
+  def test_boolean
+     arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 {false,true}
+@DATA
+true
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [true]]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "missing data from first line output failure")   
+  end
+  
+  def test_boolean_multipl
+     arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 {false,true}
+@ATTRIBUTE Attr1 {false,true}
+@ATTRIBUTE Attr2 {false,true}
+@DATA
+true, false, true
+true, true, true
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [true,false,true],[true,true,true]]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "missing data from first line output failure")   
   end
 end
 

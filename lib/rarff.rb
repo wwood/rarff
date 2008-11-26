@@ -53,6 +53,7 @@ module Rarff
   ATTRIBUTE_INTEGER = 'INTEGER'
   ATTRIBUTE_STRING = 'STRING'
   ATTRIBUTE_DATE = 'DATE'
+  ATTRIBUTE_BOOLEAN = '{false, true}'
 
   MISSING = '?'
 
@@ -84,7 +85,8 @@ module Rarff
         @type_is_nominal = true
         # Example format: "{nom1,nom2, nom3, nom4,nom5 } "
         # Split on '{'  ','  or  '}'
-        @type = @type.gsub(/^\s*\{\s*/, '').gsub(/\s*\}\s*$/, '').split(/\s*\,\s*/)
+#        @type = @type.gsub(/^\s*\{\s*/, '').gsub(/\s*\}\s*$/, '').split(/\s*\,\s*/)
+        @type = @type.split(/\s*\,\s*/)
       end
     end
 
@@ -193,8 +195,10 @@ module Rarff
             @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_NUMERIC)
           elsif col.kind_of?(String)
             @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_STRING)
+          elsif col == false or col == true #exactly equal to a boolean
+            @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_BOOLEAN)
           else
-            raise Exception, "Could not parse attribute: #{col.inspect}"
+            raise Exception, "Could not parse attribute to ARFF data type: #{col.inspect}"
           end
         }
       }
@@ -260,7 +264,7 @@ module Rarff
         else
           mapped.join(", ")
         end
-      }.join("\n").gsub(/^/, sparse ? '{' : '').gsub(/$/, sparse ? '}' : '')
+      }.join("\n")
     end
 
 
