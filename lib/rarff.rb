@@ -53,6 +53,10 @@ module Rarff
   ATTRIBUTE_INTEGER = 'INTEGER'
   ATTRIBUTE_STRING = 'STRING'
   ATTRIBUTE_DATE = 'DATE'
+  # Model Boolean as a Nominal Attribute.
+  # Use {false, true} not {true, false} because then in visualisations in Weka
+  # true is to the right, which makes more intuitive sense
+  ATTRIBUTE_BOOLEAN = '{false, true}'
 
   MISSING = '?'
 
@@ -100,7 +104,7 @@ module Rarff
 
     def to_arff
       if @type_is_nominal == true
-        ATTRIBUTE_MARKER + " #{@name} #{@type.join(',')}"
+        ATTRIBUTE_MARKER + " #{@name} {#{@type.join(',').gsub(' ','_')}}"
       else
         ATTRIBUTE_MARKER + " #{@name} #{@type}"
       end
@@ -193,6 +197,8 @@ module Rarff
             @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_NUMERIC)
           elsif col.kind_of?(String)
             @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_STRING)
+          elsif col.kind_of?(TrueClass) or col.kind_of?(FalseClass) # How come there is no generic BooleanClass?
+            @attributes[j] = Attribute.new("Attr#{j}", ATTRIBUTE_BOOLEAN)
           else
             raise Exception, "Could not parse attribute: #{col.inspect}"
           end
@@ -219,7 +225,8 @@ module Rarff
 
     def to_arff(sparse=false)
       RELATION_MARKER + " #{@name}\n" +
-        @attributes.map{ |attr| attr.to_arff }.join("\n") +
+#        @attributes.map{ |attr| attr.to_arff }.join("\n") +
+        @attributes.join("\n") +
         "\n" +
         DATA_MARKER + "\n" +
         
