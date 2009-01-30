@@ -163,7 +163,7 @@ class TestArffLib < Test::Unit::TestCase
 @RELATION MyCoolRelation
 @ATTRIBUTE Attr0 NUMERIC
 @ATTRIBUTE subject STRING
-@ATTRIBUTE Attr2 {true, false}
+@ATTRIBUTE Attr2 {false,true}
 @DATA
 ?, ?, ?
 20.9, ruby, true

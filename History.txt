@@ -1,5 +1,10 @@
 == Changes
 
+=== 0.2.2 (unofficial)
+
+* Handles boolean inputs, which are modelled as nominals
+* Handles spaces in nominals, which are replaced by underscores. Probably should be quoting these, but is good enough for me right now
+
 === 0.2.1 (unofficial)
 
 * Handles missing data in output, encoded internally as nil values
