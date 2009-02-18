@@ -1,8 +1,13 @@
 == Changes
 
-=== 0.2.2
+=== 0.2.3
 
 * Added set_string_attributes_to_nominal for easy conversion of string attributes to nominal ones
+
+=== 0.2.2 (unofficial)
+
+* Handles boolean inputs, which are modelled as nominals
+* Handles spaces in nominals, which are replaced by underscores. Probably should be quoting these, but is good enough for me right now
 
 === 0.2.1 (unofficial)
 

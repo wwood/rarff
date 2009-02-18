@@ -101,7 +101,6 @@ class TestArffLib < Test::Unit::TestCase
   #    assert_equal(0, rel.instances[3][12])
   #    #               puts "\n\nARFF: (\n#{rel.to_arff}\n)"
   #  end
-  #
   def test_output_missing
     arff_file_str = <<-END_OF_ARFF_FILE
 @RELATION MyCoolRelation
@@ -219,6 +218,29 @@ two, four
 
     #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
     assert_equal(arff_file_str, rel.to_arff, "test_strings_as_nominal")
+  end
+  
+  def test_boolean_2
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 NUMERIC
+@ATTRIBUTE subject STRING
+@ATTRIBUTE Attr2 {false,true}
+@DATA
+?, ?, ?
+20.9, ruby, true
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [nil, nil, nil],
+      [20.9, 'ruby', true]]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.attributes[1].name = 'subject'
+
+    assert_equal(arff_file_str, rel.to_arff, "missing data output failure")   
   end
 end
 

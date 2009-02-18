@@ -3,7 +3,7 @@ require 'hoe'
 #require './lib/rarff.rb'
  
 gem_name = 'rarff'
-hoe = Hoe.new(gem_name,'0.2.2') do |p|
+hoe = Hoe.new(gem_name,'0.2.3') do |p|
   
   p.author = "Andy Payne, Ben J Woodcroft"
   p.email = "apayne .at. gmail.com, b.woodcroft@pgrad.unimelb.edu.au"
