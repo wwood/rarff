@@ -1,5 +1,9 @@
 == Changes
 
+=== 0.2.2
+
+* Added set_string_attributes_to_nominal for easy conversion of string attributes to nominal ones
+
 === 0.2.1 (unofficial)
 
 * Handles missing data in output, encoded internally as nil values

@@ -85,7 +85,7 @@ module Rarff
         @type_is_nominal = true
         # Example format: "{nom1,nom2, nom3, nom4,nom5 } "
         # Split on '{'  ','  or  '}'
-#        @type = @type.gsub(/^\s*\{\s*/, '').gsub(/\s*\}\s*$/, '').split(/\s*\,\s*/)
+        #        @type = @type.gsub(/^\s*\{\s*/, '').gsub(/\s*\}\s*$/, '').split(/\s*\,\s*/)
         @type = @type.split(/\s*\,\s*/)
       end
     end
@@ -210,6 +210,26 @@ module Rarff
       end
     end
 
+    # Make all String type attributes into nominal attributes, because
+    # they are more useful in WEKA because more techniques handle them than
+    # strings
+    def set_string_attributes_to_nominal
+      nominals = {}
+      # Frustratingly, we have to traverse this 2D array with the
+      # wrong dimension first. Oh well.
+      @instances.each_with_index do |row, row_index|
+        row.each_with_index do |string, col_index|
+          next unless @attributes[col_index].type == ATTRIBUTE_STRING
+
+          nominals[col_index] ||= {}
+          nominals[col_index][string] ||= true
+        end
+      end
+
+      nominals.each do |index, strings|
+        @attributes[index].type = "{#{strings.keys.join(',')}}"
+      end
+    end
 
     def expand_sparse(str)
       arr = Array.new(@attributes.size, 0)
@@ -244,7 +264,7 @@ module Rarff
           
           # Do the final output
           if sparse
-            if col.nil? or 
+            if col.nil? or
                 (@attributes[i].type =~ /^#{ATTRIBUTE_NUMERIC}$/i and col == 0)
               nil
             else
