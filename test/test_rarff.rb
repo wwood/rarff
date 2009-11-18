@@ -38,7 +38,7 @@ class TestArffLib < Test::Unit::TestCase
     #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
     assert_equal(arff_file_str, rel.to_arff, "Arff creation test failed.")
   end
-  #
+ 
   #  # Test creation of a sparse arff file string.
   #  def test_sparse_arff_creation
   #
@@ -219,6 +219,72 @@ two, four
     #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
     assert_equal(arff_file_str, rel.to_arff, "test_strings_as_nominal")
   end
+    
+  def test_set_strings_nominal2
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 NUMERIC
+@ATTRIBUTE Attr1 {three,four}
+@DATA
+1, three
+2, four
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [1,'three'],[2,'four']]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.set_string_attributes_to_nominal
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "test_strings_as_nominal")
+  end
+
+  def test_strings_nominal_with_arguments1
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 NUMERIC
+@ATTRIBUTE Attr1 STRING
+@DATA
+1, three
+2, four
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [1,'three'],[2,'four']]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.set_string_attributes_to_nominal([0])
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "test_strings_as_nominal")
+  end
+
+  def test_strings_nominal_with_arguments2
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE Attr0 NUMERIC
+@ATTRIBUTE Attr1 {three,four}
+@DATA
+1, three
+2, four
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [ [1,'three'],[2,'four']]
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.set_string_attributes_to_nominal([0,1])
+
+    #               puts "rel.to_arff:\n(\n#{rel.to_arff}\n)\n"
+    assert_equal(arff_file_str, rel.to_arff, "test_strings_as_nominal")
+  end
   
   def test_boolean_2
     arff_file_str = <<-END_OF_ARFF_FILE
@@ -241,6 +307,32 @@ two, four
     rel.attributes[1].name = 'subject'
 
     assert_equal(arff_file_str, rel.to_arff, "missing data output failure")   
+  end
+
+  def test_commas_in_attribute_name
+    arff_file_str = <<-END_OF_ARFF_FILE
+@RELATION MyCoolRelation
+@ATTRIBUTE subject {ruby_yeh,ruby}
+@ATTRIBUTE Attr1 {duh}
+@DATA
+ruby__yeh, duh
+ruby, duh
+    END_OF_ARFF_FILE
+
+    arff_file_str.gsub!(/\n$/, '')
+
+    instances = [
+      ['ruby, yeh','duh'],
+      ['ruby','duh']
+    ]
+
+
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = instances
+    rel.attributes[0].name = 'subject'
+    rel.set_string_attributes_to_nominal
+
+    assert_equal(arff_file_str, rel.to_arff, "comma in string attribute failure")
   end
 end
 
