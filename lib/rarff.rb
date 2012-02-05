@@ -253,7 +253,6 @@ module Rarff
 
     def to_arff(sparse=false)
       RELATION_MARKER + " #{@name}\n" +
-#        @attributes.map{ |attr| attr.to_arff }.join("\n") +
         @attributes.join("\n") +
         "\n" +
         DATA_MARKER + "\n" +
@@ -265,7 +264,7 @@ module Rarff
           # quotes or are already quoted.
           unless col.nil?
             if @attributes[i].type =~ /^#{ATTRIBUTE_STRING}$/i
-              if col =~ /\s+/
+              if col =~ /[,\s+]/
                 col = "'" + col + "'"
               end
             elsif @attributes[i].type =~ /^#{ATTRIBUTE_DATE}/i  ## Hack comparison. Ugh.

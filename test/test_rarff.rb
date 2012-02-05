@@ -17,7 +17,7 @@ class TestArffLib < Test::Unit::TestCase
 @ATTRIBUTE birthday DATE "yyyy-MM-dd HH:mm:ss"
 @DATA
 1.4, 'foo bar', 5, baz, "1900-08-08 12:12:12"
-20.9, ruby, 46, rocks, "2005-10-23 12:12:12"
+20.9, ruby, 46, 'roc,ks', "2005-10-23 12:12:12"
 0, ruby, 46, rocks, "2001-02-19 12:12:12"
 68.1, stuff, 728, 'is cool', "1974-02-10 12:12:12"
     END_OF_ARFF_FILE
@@ -25,7 +25,7 @@ class TestArffLib < Test::Unit::TestCase
     arff_file_str.gsub!(/\n$/, '')
 
     instances = [ [1.4, 'foo bar', 5, 'baz', "1900-08-08 12:12:12"],
-      [20.9, 'ruby', 46, 'rocks', "2005-10-23 12:12:12"],
+      [20.9, 'ruby', 46, 'roc,ks', "2005-10-23 12:12:12"],
       [0, 'ruby', 46, 'rocks', "2001-02-19 12:12:12"],
       [68.1, 'stuff', 728, 'is cool', "1974-02-10 12:12:12"]]
 
