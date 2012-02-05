@@ -1,0 +1,56 @@
+rarff
+=====
+
+DESCRIPTION:
+------------
+
+Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files. ARFF files are used to specify data sets for data mining and machine learning. This library can generate ARFF files from Ruby Arrays of Arrays.
+
+FEATURES
+--------
+* Missing values - '?' are handled in creation of ARFF files
+
+PROBLEMS
+--------
+* Spaces or quotes in nominal types
+* Commas can cause problems in attribute names, but should work within individual instances
+* Error checking/validation
+* Creation of sparse ARFF files
+* Dates - create, translate, and interpret date format strings.
+
+SYNOPSIS:
+---------
+
+    require 'wwood-rarff'
+    rel = Rarff::Relation.new('MyCoolRelation')
+    rel.instances = [ [1.4, 'foo bar', 5, 'baz', "1900-08-08 12:12:12"],
+      [20.9, 'ruby', 46, 'roc,ks', "2005-10-23 12:12:12"],
+      [0, 'ruby', 46, 'rocks', "2001-02-19 12:12:12"],
+      [68.1, 'stuff', 728, 'is cool', "1974-02-10 12:12:12"]]
+    rel.attributes[1].name = 'subject'
+    rel.attributes[4].name = 'birthday'
+    rel.attributes[4].type = 'DATE "yyyy-MM-dd HH:mm:ss"'
+    rel.to_arff
+
+generates the String
+
+    @RELATION MyCoolRelation
+    @ATTRIBUTE Attr0 NUMERIC
+    @ATTRIBUTE subject STRING
+    @ATTRIBUTE Attr2 NUMERIC
+    @ATTRIBUTE Attr3 STRING
+    @ATTRIBUTE birthday DATE "yyyy-MM-dd HH:mm:ss"
+    @DATA
+    1.4, 'foo bar', 5, baz, "1900-08-08 12:12:12"
+    20.9, ruby, 46, roc,ks, "2005-10-23 12:12:12"
+    0, ruby, 46, rocks, "2001-02-19 12:12:12"
+    68.1, stuff, 728, 'is cool', "1974-02-10 12:12:12"
+
+== INSTALL:
+
+    gem install wwood-rarff
+
+== LICENSE:
+
+Copyright (c) 2008-2012 Ben J. Woodcroft
+All rights reserved. See LICENSE.txt for details.
