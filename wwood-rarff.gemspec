@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
     "lib/rarff.rb",
     "test/test_arff.arff",
     "test/test_rarff.rb",
-    "test/test_sparse_arff.arff"
+    "test/test_sparse_arff.arff",
+    "wwood-rarff.gemspec"
   ]
   s.homepage = "http://github.com/wwood/rarff"
   s.licenses = ["MIT"]
