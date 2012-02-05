@@ -1,22 +1,29 @@
+# encoding: utf-8
+
 require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "wwood-rarff"
-    gem.summary = %Q{Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files}
-    gem.description = %Q{Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files. ARFF files are used to specify 
-data sets for data mining and machine learning.}
-    gem.email = "donttrustben near gmail.com"
-    gem.homepage = "http://github.com/wwood/rarff"
-    gem.authors = ["Ben J Woodcroft","Andy Payne"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "wwood-rarff"
+  gem.homepage = "http://github.com/wwood/rarff"
+  gem.license = "MIT"
+  gem.summary = %Q{Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files}
+  gem.description = %Q{Rarff is a Ruby library for dealing with Attribute-Relation File Format (ARFF) files. ARFF files are used to specify data sets for data mining and machine learning.}
+  gem.email = "gmail.com after donttrustben"
+  gem.authors = ["Ben J Woodcroft"]
+  # dependencies defined in Gemfile
 end
+Jeweler::RubygemsDotOrgTasks.new
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -25,29 +32,22 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
-  end
+require 'rcov/rcovtask'
+Rcov::RcovTask.new do |test|
+  test.libs << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+  test.rcov_opts << '--exclude "gems/*"'
 end
-
-task :test => :check_dependencies
 
 task :default => :test
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "blah #{version}"
+  rdoc.title = "rarff #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
